@@ -6,7 +6,7 @@ import { useState } from "react";
 // ─────────────────────────────────────────────────────────────────────────────
 const STRIPE_LINKS = {
   grind: "https://buy.stripe.com/test_14A28t5Hrfere0C3dtfAc01",
-  label: "https://buy.stripe.com/test_14A28t5Hrfere0C3dtfAc01",
+  label: "https://buy.stripe.com/test_7sY3cxgm59U76ya4hxfAc00",
 };
 
 const PLATFORMS = [
@@ -26,7 +26,7 @@ async function askClaude(prompt) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 1000,
       messages: [{ role: "user", content: prompt }],
     }),
@@ -600,7 +600,7 @@ npm install
               </ul>
               <div className="code-block">{`// api/generate.js (Vercel Serverless Function)
 export default async function handler(req, res) {
-  const response = await fetch("/api/generate", {
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "x-api-key": process.env.ANTHROPIC_API_KEY,
