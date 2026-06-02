@@ -22,7 +22,7 @@ const GENRES  = ["Hip-Hop","Trap","R&B","Pop","Afrobeats","EDM","Reggaeton","Roc
 const MOODS   = ["Hype","Chill","Emotional","Aggressive","Feel-Good","Dark","Romantic","Party","Motivational","Mysterious"];
 
 async function askClaude(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("/api/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -600,7 +600,7 @@ npm install
               </ul>
               <div className="code-block">{`// api/generate.js (Vercel Serverless Function)
 export default async function handler(req, res) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch("/api/generate", {
     method: "POST",
     headers: {
       "x-api-key": process.env.ANTHROPIC_API_KEY,
