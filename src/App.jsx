@@ -5,7 +5,7 @@ import { useState } from "react";
 //     (create them free at dashboard.stripe.com → Payment Links)
 // ─────────────────────────────────────────────────────────────────────────────
 const STRIPE_LINKS = {
-  grind: "https://buy.stripe.com/test_14A28t5Hrfere0C3dtfAc01",
+  grind:  "https://buy.stripe.com/cNidRa2E097a7Ie1iOfYY00",
   label: "https://buy.stripe.com/test_7sY3cxgm59U76ya4hxfAc00",
 };
 
