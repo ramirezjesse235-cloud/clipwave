@@ -6,7 +6,7 @@ import { useState } from "react";
 // ─────────────────────────────────────────────────────────────────────────────
 const STRIPE_LINKS = {
   grind:  "https://buy.stripe.com/cNidRa2E097a7Ie1iOfYY00",
-  label: "https://buy.stripe.com/test_7sY3cxgm59U76ya4hxfAc00",
+  label:  "https://buy.stripe.com/8x2aEY4M80AE9Qmd1wfYY01",
 };
 
 const PLATFORMS = [
