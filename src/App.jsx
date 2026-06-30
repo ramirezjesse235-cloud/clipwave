@@ -1,5 +1,5 @@
 import { useState } from "react";
-inport VideoGenerator from "./VideoGenerator";
+import VideoGenerator from "./VideoGenerator";
 // ─────────────────────────────────────────────────────────────────────────────
 // ⚠️  REPLACE THESE WITH YOUR REAL STRIPE PAYMENT LINKS
 //     (create them free at dashboard.stripe.com → Payment Links)
