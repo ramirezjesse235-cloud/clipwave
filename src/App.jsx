@@ -451,7 +451,7 @@ Keep it REAL, HYPE, and authentic to the genre.`;
                   <button className="act-btn" onClick={handleCopy}>{copied?"✓ Copied!":"Copy Script"}</button>
                   <button className="act-btn" onClick={handleDownload}>⬇ Download .txt</button>
                   <button className="act-btn gold" onClick={()=>setTab("dashboard")}>Save to Dashboard →</button>
-                  <VideoGenerator script={script} isPaidUser={true} />
+                  <VideoGenerator script={output} isPaidUser={true} />
                 </div>
               </div>
             )}
