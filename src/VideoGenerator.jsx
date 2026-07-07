@@ -24,8 +24,7 @@ export default function VideoGenerator({ script, isPaidUser }) {
 
       const taskId = submitData.task_id;
       setStatus("processing");
-
-      const maxAttempts = 30;
+      const maxAttempts = 60;
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
         await new Promise((resolve) => setTimeout(resolve, 10000));
 
