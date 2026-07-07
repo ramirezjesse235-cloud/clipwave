@@ -1,7 +1,7 @@
 // /api/video-status.js
-// Checks the status of a Kling AI video generation task.
+// Checks the status of a fal.ai video generation request.
 // Expects GET query param: ?task_id=...
-// Returns: { status: "submitted" | "processing" | "succeed" | "failed", video_url?: "..." }
+// Returns: { status: "...", video_url?: "..." }
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -14,37 +14,55 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing 'task_id' query parameter" });
   }
 
-  const KLING_API_KEY = process.env.KLING_API_KEY;
+  const FAL_API_KEY = process.env.FAL_API_KEY;
 
-  if (!KLING_API_KEY) {
-    return res.status(500).json({ error: "Server is missing KLING_API_KEY" });
+  if (!FAL_API_KEY) {
+    return res.status(500).json({ error: "Server is missing FAL_API_KEY" });
   }
 
   try {
-    const klingResponse = await fetch(
-      `https://api-singapore.klingai.com/v1/videos/text2video/${task_id}`,
+    const statusRes = await fetch(
+      `https://queue.fal.run/fal-ai/kling-video/v1.6/standard/text-to-video/requests/${task_id}/status`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${KLING_API_KEY}`,
+          Authorization: `Key ${FAL_API_KEY}`,
         },
       }
     );
 
-    const data = await klingResponse.json();
+    const statusData = await statusRes.json();
 
-    if (!klingResponse.ok) {
-      return res.status(klingResponse.status).json({
-        error: "Kling API error",
-        details: data,
-      });
+    if (!statusRes.ok) {
+      return res.status(statusRes.status).json({ error: "fal.ai status error", details: statusData });
     }
 
-    const status = data?.data?.task_status; // submitted | processing | succeed | failed
-    const videoUrl = data?.data?.task_result?.videos?.[0]?.url || null;
+    const falStatus = statusData?.status; // IN_QUEUE, IN_PROGRESS, COMPLETED, FAILED
 
-    return res.status(200).json({ status, video_url: videoUrl });
+    if (falStatus === "COMPLETED") {
+      // fetch the actual result
+      const resultRes = await fetch(
+        `https://queue.fal.run/fal-ai/kling-video/v1.6/standard/text-to-video/requests/${task_id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Key ${FAL_API_KEY}`,
+          },
+        }
+      );
+      const resultData = await resultRes.json();
+      const videoUrl = resultData?.video?.url || null;
+      return res.status(200).json({ status: "succeed", video_url: videoUrl });
+    }
+
+    if (falStatus === "FAILED") {
+      return res.status(200).json({ status: "failed" });
+    }
+
+    // still processing
+    return res.status(200).json({ status: "processing" });
   } catch (err) {
-    return res.status(500).json({ error: "Failed to reach Kling API", details: String(err) });
+    return res.status(500).json({ error: "Failed to reach fal.ai API", details: String(err) });
   }
 }
+
