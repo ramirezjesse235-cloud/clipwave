@@ -1,7 +1,7 @@
 // /api/generate-video.js
-// Submits a text-to-video generation request to Kling AI.
+// Submits a text-to-video generation request via fal.ai (Kling v1.6 standard)
 // Expects POST body: { prompt: "..." }
-// Returns: { task_id: "..." }
+// Returns: { request_id: "..." }
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,50 +14,48 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing or invalid 'prompt' in request body" });
   }
 
-  const KLING_API_KEY = process.env.KLING_API_KEY;
+  const FAL_API_KEY = process.env.FAL_API_KEY;
 
-  if (!KLING_API_KEY) {
-    return res.status(500).json({ error: "Server is missing KLING_API_KEY" });
+  if (!FAL_API_KEY) {
+    return res.status(500).json({ error: "Server is missing FAL_API_KEY" });
   }
 
   try {
-    const klingResponse = await fetch(
-      "https://api-singapore.klingai.com/v1/videos/text2video",
+    const response = await fetch(
+      "https://queue.fal.run/fal-ai/kling-video/v1.6/standard/text-to-video",
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${KLING_API_KEY}`,
+          Authorization: `Key ${FAL_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model_name: "kling-v2-6",
           prompt: prompt,
-          negative_prompt: "",
           duration: "5",
-          mode: "std",
-          aspect_ratio: "9:16", // good default for social/promo clips
+          aspect_ratio: "9:16",
         }),
       }
     );
 
-    const data = await klingResponse.json();
+    const data = await response.json();
 
-    if (!klingResponse.ok) {
-      return res.status(klingResponse.status).json({
-        error: "Kling API error",
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "fal.ai API error",
         details: data,
       });
     }
 
-    const taskId = data?.data?.task_id;
+    const requestId = data?.request_id;
 
-    if (!taskId) {
-      return res.status(500).json({ error: "Kling API did not return a task_id", details: data });
+    if (!requestId) {
+      return res.status(500).json({ error: "fal.ai did not return a request_id", details: data });
     }
 
-    return res.status(200).json({ task_id: taskId });
+    return res.status(200).json({ task_id: requestId });
   } catch (err) {
-    return res.status(500).json({ error: "Failed to reach Kling API", details: String(err) });
+    return res.status(500).json({ error: "Failed to reach fal.ai API", details: String(err) });
   }
 }
+
 
