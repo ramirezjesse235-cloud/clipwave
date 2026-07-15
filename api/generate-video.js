@@ -30,7 +30,7 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: prompt.slice{0, 2500},
+          prompt: prompt.slice(0, 2500),
           duration: "5",
           aspect_ratio: "9:16",
         }),
